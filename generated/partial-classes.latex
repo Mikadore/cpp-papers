@@ -1,0 +1,239 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  10pt,
+  a4paperpaper,
+  oneside,
+  openany,
+  final]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Freestanding Library: Partial Classes},
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=Maroon,
+  citecolor=blue,
+  urlcolor=blue,
+  pdfcreator={mpark/wg21}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[left=2.245cm,right=2.245cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{246,248,250}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{#1}
+\newcommand{\AttributeTok}[1]{#1}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{#1}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.38,0.49}{#1}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.00,0.38,0.49}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\FunctionTok}[1]{#1}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.38,0.49}{#1}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.69,0.10,0.08}{#1}}
+\newcommand{\OtherTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.44,0.31,0.22}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\VariableTok}[1]{#1}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.62,0.41,0.03}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\usepackage[normalem]{ulem}
+% Avoid problems with \sout in headers with hyperref
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+% adjust quote indent
+\renewenvironment{quote}{\list{}{\leftmargin=0.2in}\item[]}{\endlist}
+
+% https://github.com/cplusplus/draft/blob/97b615a5a6ab0598b624ee05402c531d0421cff6/source/styles.tex#L127-L133
+\renewcommand{\labelitemi}{---}
+\renewcommand{\labelitemii}{---}
+\renewcommand{\labelitemiii}{---}
+\renewcommand{\labelitemiv}{---}
+
+% https://github.com/cplusplus/draft/blob/97b615a5a6ab0598b624ee05402c531d0421cff6/source/layout.tex#L32-L68
+\makeatletter
+\newcommand{\pnum}[1]{%
+\noindent\makebox[0pt][l]{\makebox[0pt][r]{%
+\scriptsize\raisebox{.7ex}{#1}%
+\hspace{\@totalleftmargin}\quad%
+}}\ignorespaces}
+\makeatother
+\makeatletter
+\def\@maketitle{
+  \newpage \null \vskip 2em
+  {\center \LARGE \@title \par}
+  \vskip 1.5em
+  \begin{flushright}
+    \begin{tabular}{ll}
+Document \#:&\\
+Date:       &\@date\\
+Project:    &Programming Language C++\\
+Audience:   &Library Evolution Working Group\\&Library Working Group\\
+Reply-to:   \@author
+    \end{tabular}
+  \end{flushright}
+}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newenvironment{cslreferences}%
+  {\setlength{\parindent}{0pt}%
+  \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces}%
+  {\par}
+
+\title{Freestanding Library: Partial Classes}
+\author{&Emil
+Meissner\\&<\href{mailto:e.meissner@seznam.cz}{\nolinkurl{e.meissner@seznam.cz}}>\\&Ben
+Craig\\&<>\\}
+\date{2021-05-11}
+
+\begin{document}
+\maketitle
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\hypertarget{introduction}{%
+\section{\texorpdfstring{Introduction\protect\hyperlink{introduction}{}}{Introduction}}\label{introduction}}
+
+This proposal is part of a group of papers aimed at improving the state
+of Freestanding. It marks (parts of) \VERB|\NormalTok{std::array}|,
+\VERB|\NormalTok{std::string\_view}|, \VERB|\NormalTok{std::variant}|,
+and \VERB|\NormalTok{std::optional}| as such. A future paper might add
+\VERB|\NormalTok{std::bitset}| (as was the original goal in
+{[}\protect\hyperlink{ref-P2268R0}{P2268R0}{]}
+
+\hypertarget{motivation-and-scope}{%
+\section{\texorpdfstring{Motivation and
+Scope\protect\hyperlink{motivation-and-scope}{}}{Motivation and Scope}}\label{motivation-and-scope}}
+
+All of the aforementioned classes are fundamentally compatible with
+Freestanding, except for a few methods that throw
+(e.g.~\VERB|\NormalTok{array::at}|). We explicitly
+\VERB|\NormalTok{=delete}| these undesirable methods.
+
+We are proposing to add all these classes because they are fundamental
+in modern, day-to-day C++.
+
+\hypertarget{scope}{%
+\subsection{\texorpdfstring{Scope\protect\hyperlink{scope}{}}{Scope}}\label{scope}}
+
+We add some wording to \VERB|\NormalTok{[freestanding.membership]}| and
+mark
+
+\hypertarget{implementation-experience}{%
+\subsection{\texorpdfstring{Implementation
+experience\protect\hyperlink{implementation-experience}{}}{Implementation experience}}\label{implementation-experience}}
+
+\hypertarget{in-the-standard-library}{%
+\subsubsection{\texorpdfstring{In The Standard
+Library\protect\hyperlink{in-the-standard-library}{}}{In The Standard Library}}\label{in-the-standard-library}}
+
+We made a fork of libc++. \VERB|\NormalTok{=delete}|ing all the methods
+was trivial, except for some methods on \VERB|\NormalTok{string\_view}|
+(which are implemented in terms of the \VERB|\NormalTok{=delete}|d
+\VERB|\NormalTok{string\_view::substring}|). All test cases (except for
+the \VERB|\NormalTok{=delete}|d methods) passed after some rather minor
+adjustments (e.g.~replacing
+\VERB|\NormalTok{get\textless{}0\textgreater{}(v)}| with
+\VERB|\NormalTok{*get\_if\textless{}0\textgreater{}(\&v)}|).
+
+\hypertarget{in-practice}{%
+\subsubsection{\texorpdfstring{In
+Practice\protect\hyperlink{in-practice}{}}{In Practice}}\label{in-practice}}
+
+Since we aren't changing the semantics of any of the classes (except
+\VERB|\NormalTok{=delete}|ing non-critical methods), it is fair to say
+that all of the (implementer \emph{AND} user) experience gathered as
+part of Hosted applies the same to Freestanding.
+
+Therefore, the more important question is, does it work? Yes! For
+example, the \href{https://www.etlcpp.com/}{Embedded Template Library}
+offers direct mappings of the \VERB|\NormalTok{std}| types. Even in
+operating systems level libraries, like Serenity's
+\href{https://github.com/SerenityOS/serenity/tree/master/AK}{AK} use
+these utilities.
+
+\hypertarget{wording}{%
+\section{\texorpdfstring{Wording\protect\hyperlink{wording}{}}{Wording}}\label{wording}}
+
+We're assuming
+
+\hypertarget{bibliography}{%
+\section{\texorpdfstring{References\protect\hyperlink{bibliography}{}}{References}}\label{bibliography}}
+
+\hypertarget{refs}{}
+\begin{cslreferences}
+\leavevmode\hypertarget{ref-P2268R0}{}%
+{[}P2268R0{]} Ben Craig. 2020-12-10. Freestanding Roadmap. \\
+\url{https://wg21.link/p2268r0}
+\end{cslreferences}
+
+\end{document}
