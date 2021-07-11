@@ -1,5 +1,5 @@
 ---
-title: "Freestanding Library: Partial Classes"
+title: "freestanding Library: Partial Classes"
 document: 000
 date: 2021-05-11
 audience:
@@ -13,24 +13,30 @@ author:
 ---
 
 # Introduction
-This proposal is part of a group of papers aimed at improving the state of Freestanding.
+This proposal is part of a group of papers aimed at improving the state of freestanding.
 It marks (parts of) `std::array`, `std::string_view`, `std::variant`, and `std::optional` as such.
 A future paper might add `std::bitset` (as was the original goal in [@P2268R0])
 
 # Motivation and Scope
-All of the added classes are fundamentally compatible with Freestanding,
+All of the added classes are fundamentally compatible with freestanding,
 except for a few methods that throw (e.g. `array::at`). We explicitly
 `=delete` these undesirable methods.
 
-The main driving factor for these additions the immense usefulness of these types in practice.
+The main driving factor for these additions is the immense usefulness of these types in practice.
 
 ## Scope
 We refine [freestanding.membership] by specifying the notion of
-partial classes, and accordinly specify the newly (partially) freestanding classes as such.
+partial classes, and accordingly specify the newly (partially) freestanding classes as such.
+
+### About \<bitset\>
+As mentioned in the introduction, this paper does not deal with bitset.
+Bitset is unique in that a relatively big part of its interface depends
+on `std::basic_string`. We do not currently have a sound plan to make bitset work as nicely as we'd like to. This situation is made worse
+by a significant amount of bitset's member functions that throw.
 
 ## Implementation experience
 ### The Existing Standard Library
-We've forked libc++, and deleted all not freestanding methods.
+We've forked libc++, and `=delete`d all not freestanding methods.
 Except for some methods on `string_view` (which are implemented in terms of the
 deleted `string_view::substring`), this did not require any changes in the implementation.
 All test cases (except for the deleted methods) passed
@@ -40,10 +46,10 @@ that all these types are usable without the deleted methods.
 ### In Practice
 Since we aren't changing the semantics of any of the classes
 (except deleted non-critical methods), it is fair to say
-that all of the (implementer *and* user) experience gathered as part of Hosted
-applies the same to Freestanding.
+that all of the (implementer *and* user) experience gathered as part of hosted
+applies the same to freestanding.
 
-The only question is, whether these classes are compatible with Freestanding. To which the answer is
+The only question is, whether these classes are compatible with freestanding. To which the answer is
 yes! For example, the [@ETL] offers direct mappings
 of the `std` types. Even in kernel-level libraries, like Serenity's
 [@AK] use a form of these utilities.
@@ -72,12 +78,32 @@ requiring all members of such a class template to be individually marked as free
 This is done to keep things explicit.
 We also introduce `//freestanding, delete`, to mean a declaration shall be deleted on freestanding.
 
+## On `std::visit`
+In this paper, we mark `std::visit` as freestanding, even though it is theoretically throwing.
+However, the conditions for `std::visit` to throw are as follows:
+
+> It is possible for a variant to hold no value if an exception is thrown during a type-changing assignment or emplacement.
+
+This means a variant will only throw on visit if a user type throws (library types don't throw on freestanding).
+In this case, `std::visit` throwing isn't a problem, since the user's code is already using, and (hopefully) handling exceptions.
+
+This however has the unfortunate side-effect that we need to keep `bad_variant_access` freestanding.
+
+## Notes on variant and value categories
+By getting rid of `std::get`, we force users to use `std::get_if`. Since `std::get_if` returns a pointer,
+once can only access the value of a variant by dereferencing said pointer, obtaining an lvalue, discarding
+the value category of the held object.
+This is unlikely to have an impact on application code, but might impact highly generic library code.
+
 # Justification for deletions
 Every deleted method is throwing.
 We omit `string_view`'s associated `operator<<` since we don't add `basic_ostream`.
 
 
 # Wording
+
+This paper's wording is based on the current working draft, [@N4878], and it assumes
+that the wording in [@P1642R5] has been applied.
 
 ## Change in [conventions]
 
@@ -103,21 +129,12 @@ Add new paragraphs to [freestanding.membership]
 > [7]{.pnum} Each freestanding member in the header synopsis of a partially freestanding class template
 > is followed by a comment including *freestanding*.
 >
-> [6]{.pnum} A *fully freestanding class template* is a freestanding class template, in which every member is a freestanding member.
-> In the associated header synopsis for such a class template, the class template's declaration is followed with a comment
-> that includes *freestanding*.
+> [8]{.pnum} A *fully freestanding class template* is a freestanding class template, in which every member is a freestanding member.
 >
-> [ *Example* 
->
->   ```cpp
->   template<class... Types> class variant; //freestanding
->   ```
->
-> -*end example*]
->
-> [8]{.pnum} Members of a partially freestanding class template that are not freestanding members may be deleted in freestanding implementations.
-> In that case, a freestanding implementation shall explicitly delete that member. In the associated header synopsis of the given partially
-> freestanding class template, the deleted member's declaration is followed with a comment that includes *freestanding* and *delete*.
+> [9]{.pnum} *Deleted freestanding members* are member functions of a partially freestanding class template that are designated as such.
+> Deleted freestanding members are not freestanding members. Deleted freestanding members are followed with a comment that includes
+> *freestanding* and *delete*. Deleted freestanding members shall either meet the requirements of a hosted implementation, or be deleted
+> using the `delete` keyword.
 >
 > [ *Example:*
 >
@@ -153,10 +170,6 @@ Please append a `//freestanding, partial` to the following entities:
 
 - `optional`
 
-Please append a `//freestanding, delete` to the following entities:
-
-- `bad_optional_access`
-
 ## Changes in [optional.optional.general]
 Instructions to the editor:
 
@@ -173,12 +186,10 @@ Instructions to the editor:
 
 Please append a `//freestanding` to every entity except:
 
-- `bad_variant_access`
 - every overload of `get`
 
 Please append a `//freestanding, delete` to the following entities:
 
-- `bad_variant_access`
 - every overload of `get`
 
 ## Changes in [string.view.synop]
@@ -186,7 +197,12 @@ Instructions to the editor:
 
 Please append a `//freestanding` to every entity except:
 
+- `basic_string_view`
 - `operator<<`
+
+Please append a `//freestanding, partial` to the following entities:
+
+- `basic_string_view`
 
 ## Changes in [string.view.template.general]
 Instructions to the editor:
