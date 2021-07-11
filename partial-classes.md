@@ -1,10 +1,9 @@
 ---
 title: "Freestanding Library: Partial Classes"
-document: 000
-date: 2021-05-11
+document: P2407R0
+date: 2021-07-11
 audience:
   - Library Evolution Working Group
-  - Library Working Group
 author:
   - name: Emil Meissner 
     email: <e.meissner@seznam.cz>
@@ -91,7 +90,7 @@ This however has the unfortunate side-effect that we need to keep `bad_variant_a
 
 ## Notes on variant and value categories
 By getting rid of `std::get`, we force users to use `std::get_if`. Since `std::get_if` returns a pointer,
-once can only access the value of a variant by dereferencing said pointer, obtaining an lvalue, discarding
+one can only access the value of a variant by dereferencing said pointer, obtaining an lvalue, discarding
 the value category of the held object.
 This is unlikely to have an impact on application code, but might impact highly generic library code.
 
@@ -103,7 +102,7 @@ We omit `string_view`'s associated `operator<<` since we don't add `basic_ostrea
 # Wording
 
 This paper's wording is based on the current working draft, [@N4878], and it assumes
-that the wording in [@P1642R5] has been applied.
+that the wording in [@P1642R5] and [@P2338R0]  has been applied.
 
 ## Change in [conventions]
 
@@ -113,8 +112,8 @@ Add new paragraphs to [freestanding.membership]
 
 > [5]{.pnum} A *freestanding member* is a member declaration of a freestanding class template that is implemented in freestanding implementations.
 >
-> [6]{.pnum} A *partially freestanding class template* is a freestanding class template, where at least one, but not all members are freestanding 
-> members.
+> [6]{.pnum} A *partially freestanding class template* is a freestanding class template, where at least one, but not all members are 
+> freestanding members.
 > In the associated header synopsis for such a class template, the class template's declaration is followed with a comment
 > that includes *freestanding* and *partial*.
 >
@@ -126,15 +125,13 @@ Add new paragraphs to [freestanding.membership]
 >
 > -*end example*]
 >
-> [7]{.pnum} Each freestanding member in the header synopsis of a partially freestanding class template
+> [7]{.pnum} Each freestanding member in the synopsis of a partially freestanding class template
 > is followed by a comment including *freestanding*.
 >
-> [8]{.pnum} A *fully freestanding class template* is a freestanding class template, in which every member is a freestanding member.
->
-> [9]{.pnum} *Deleted freestanding members* are member functions of a partially freestanding class template that are designated as such.
-> Deleted freestanding members are not freestanding members. Deleted freestanding members are followed with a comment that includes
-> *freestanding* and *delete*. Deleted freestanding members shall either meet the requirements of a hosted implementation, or be deleted
-> using the `delete` keyword.
+> [8]{.pnum} *Deleted freestanding members* are member functions of a partially freestanding class template that are designated as such.
+> Deleted freestanding members are not freestanding members. In the partially freestanding class template's synopsis, deleted freestanding
+> members are followed with a comment that includes
+> *freestanding* and *delete*. Deleted freestanding members shall either meet the requirements of a hosted implementation, or be deleted.
 >
 > [ *Example:*
 >
@@ -149,7 +146,7 @@ Add new paragraphs to [freestanding.membership]
 ## Changes in [compliance]
 Add new rows to Table 24:
 
-> |         | Sublcause           | Header(s)  |
+> |         | Subclause           | Header(s)  |
 > | ------------- |:-------------:| -----:|
 > | [...]      | [...] | [...] |
 > | ?.? [optional] | Optional Objects | \<optional\>
