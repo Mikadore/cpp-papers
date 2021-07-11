@@ -1,5 +1,5 @@
 ---
-title: "freestanding Library: Partial Classes"
+title: "Freestanding Library: Partial Classes"
 document: 000
 date: 2021-05-11
 audience:
