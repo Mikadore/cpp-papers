@@ -11,6 +11,11 @@ author:
     email: <ben dot craig at gmail dot com>
 ---
 
+# Changes from previous revisions
+## Changes from R0
+- Add wording for feature test macros
+- Mention monadic optional and `string_view::contains` 
+
 # Introduction
 This proposal is part of a group of papers aimed at improving the state of freestanding.
 It marks (parts of) `std::array`, `std::string_view`, `std::variant`, and `std::optional` as such.
@@ -97,6 +102,11 @@ This is unlikely to have an impact on application code, but might impact highly 
 # Justification for deletions
 Every deleted method is throwing.
 We omit `string_view`'s associated `operator<<` since we don't add `basic_ostream`.
+
+# Monadic optional and string_view::contains
+Since this paper was first published, `std::string_view` got a new `contains` member function,
+and `std::optional` got `transform`, `and_then`, and `or_else`. All these functions are not throwing,
+and there are no other problems regarding freestanding. We therefore opt for them being marked as freestanding.
 
 
 # Wording
@@ -248,6 +258,16 @@ Please append a `//freestanding, delete` to the following entities:
 
 - `at`
 
+## Feature test macros
+
+This part of the paper follows the guide lines as specified in [@P2198R2].
+Add the following macros to [version.syn]:
+```cpp
+#define __cpp_lib_freestanding_array        20XXXXL //also in <array>
+#define __cpp_lib_freestanding_optional     20XXXXL //also in <optional>
+#define __cpp_lib_freestanding_string_view  20XXXXL //also in <string_view>
+#define __cpp_lib_freestanding_variant      20XXXXL //also in <variant>
+```
 
 ---
 references:
